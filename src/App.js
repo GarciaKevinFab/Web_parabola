@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// Comenta o elimina temporalmente: import { useSpring, animated } from 'react-spring';
+import { useSpring, animated } from 'react-spring';
 import EquationMode from './components/EquationMode';
 import ParameterMode from './components/ParameterMode';
 import Graph from './components/Graph';
-import Preview from './components/Preview';
 import './styles.css';
 
 function App() {
@@ -17,30 +16,32 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [mode, setMode] = useState('equation');
-  // const [isTransitioning, setIsTransitioning] = useState(false); // Comenta temporalmente
-  const [retryCount, setRetryCount] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const maxRetries = 3;
   const timeout = 60000;
 
-  // const animationProps = useSpring({ // Comenta temporalmente
-  //   opacity: isTransitioning ? 0 : 1,
-  //   transform: isTransitioning ? 'scale(0.98)' : 'scale(1)',
-  //   config: { duration: 300 },
-  // });
+  const animationProps = useSpring({
+    opacity: isTransitioning ? 0 : 1,
+    transform: isTransitioning ? 'scale(0.98)' : 'scale(1)',
+    config: { duration: 300 },
+  });
 
   useEffect(() => {
-    // setIsTransitioning(true); // Comenta temporalmente
+    setIsTransitioning(true);
     if (mode === 'equation') {
       setPreview(equation || 'Ingrese una ecuación');
     } else {
       const a = altura && ancho ? (-4 * parseFloat(altura) / (parseFloat(ancho) ** 2)).toString() : '';
       setPreview(a ? `y = ${a}x^2 + ${altura}` : 'Ingrese altura y ancho');
     }
-    // const timer = setTimeout(() => setIsTransitioning(false), 300); // Comenta temporalmente
-    // return () => clearTimeout(timer);
   }, [equation, altura, ancho, mode]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsTransitioning(false), 300);
+    return () => clearTimeout(timer);
+  }, [mode]);
 
   const calculateWithRetry = async (params, attempt = 0) => {
     try {
@@ -51,7 +52,6 @@ function App() {
       });
       console.log('Respuesta de API:', response.data);
       setData(response.data);
-      setRetryCount(0);
     } catch (err) {
       console.error(`Error en el intento ${attempt + 1}:`, err);
       if (attempt < maxRetries - 1) {
@@ -123,8 +123,7 @@ function App() {
           Modo Parámetros
         </button>
       </div>
-      {/* <animated.div className={`input-group ${isTransitioning ? 'animating' : ''}`} style={animationProps}> */} {/* Comenta temporalmente */}
-      <div className="input-group">
+      <animated.div className={`input-group ${isTransitioning ? 'animating' : ''}`} style={animationProps}>
         {mode === 'equation' ? <EquationMode equation={equation} setEquation={setEquation} loading={loading} /> : <ParameterMode coeficienteA={coeficienteA} setCoeficienteA={setCoeficienteA} altura={altura} setAltura={setAltura} ancho={ancho} setAncho={setAncho} loading={loading} />}
         <Preview formula={preview} />
         {error && (
@@ -138,8 +137,7 @@ function App() {
         <button onClick={calculate} disabled={loading} className="calculate-button">
           {loading ? <span className="spinner"></span> : 'Calcular'}
         </button>
-      </div>
-      {/* </animated.div> */} {/* Comenta temporalmente */}
+      </animated.div>
       {data && <Graph data={data} />}
     </div>
   );
