@@ -4,6 +4,7 @@ import { useSpring, animated } from 'react-spring';
 import EquationMode from './components/EquationMode';
 import ParameterMode from './components/ParameterMode';
 import Graph from './components/Graph';
+import Preview from './components/Preview';
 import './styles.css';
 
 function App() {
