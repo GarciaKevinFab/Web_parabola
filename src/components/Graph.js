@@ -22,8 +22,39 @@ const Graph = ({ data }) => {
             line: { color: '#1f77b4', width: 4 },
             name: 'Curva',
         },
+        // Agregar punto Foco (coordenadas aproximadas)
+        {
+            x: [0.0],
+            y: [1.0],
+            z: [0.0],
+            type: 'scatter3d',
+            mode: 'markers',
+            marker: { color: '#ffa500', size: 10 }, // Naranja para Foco
+            name: 'Foco',
+        },
+        // Agregar punto Vértice (coordenadas aproximadas)
+        {
+            x: [0.0],
+            y: [0.0],
+            z: [0.0],
+            type: 'scatter3d',
+            mode: 'markers',
+            marker: { color: '#00ff00', size: 10 }, // Verde para Vértice
+            name: 'Vértice',
+        },
+        // Agregar punto El punto rojo que ya está (coordenadas aproximadas)
+        {
+            x: [0.0],
+            y: [-1.0],
+            z: [0.0],
+            type: 'scatter3d',
+            mode: 'markers',
+            marker: { color: '#ff0000', size: 10 }, // Rojo para punto rojo
+            name: 'Punto Rojo',
+        },
     ];
 
+    // Agregar anotaciones si es una parábola
     if (data.tipo.toLowerCase() === 'parabola') {
         if (data.parametros.puntos_corte !== "No hay puntos de corte reales") {
             plotData.push({
