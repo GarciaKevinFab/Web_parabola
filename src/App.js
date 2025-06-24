@@ -29,8 +29,8 @@ function App() {
     config: { duration: 300 },
   });
 
+  // Actualizar preview solo cuando cambie el mode o los valores relevantes
   useEffect(() => {
-    setIsTransitioning(true);
     if (mode === 'equation') {
       setPreview(equation || 'Ingrese una ecuación');
     } else {
@@ -39,7 +39,9 @@ function App() {
     }
   }, [equation, altura, ancho, mode]);
 
+  // Activar transición solo al cambiar el mode
   useEffect(() => {
+    setIsTransitioning(true);
     const timer = setTimeout(() => setIsTransitioning(false), 300);
     return () => clearTimeout(timer);
   }, [mode]);
@@ -81,8 +83,11 @@ function App() {
       const h = parseFloat(altura);
       const w = parseFloat(ancho);
       console.log('Parámetros enviados:', { coeficienteA, altura, ancho });
-      if ((!coeficienteA && !altura) || !ancho || isNaN(a) || isNaN(h) || isNaN(w) || h === 0 || w === 0) {
-        setError('Complete al menos el coeficiente "a" o altura y ancho con valores válidos.');
+      // Permitir cálculo si se proporciona coeficienteA y ancho, o altura y ancho
+      if (((!coeficienteA && !altura) || !ancho || isNaN(w) || w === 0) ||
+        (coeficienteA && isNaN(a)) ||
+        (altura && (isNaN(h) || h === 0))) {
+        setError('Complete al menos el coeficiente "a" o altura con valores válidos, y asegúrese de que el ancho sea válido y diferente de cero.');
         setLoading(false);
         return;
       }
